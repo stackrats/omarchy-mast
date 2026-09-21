@@ -1,0 +1,107 @@
+{
+  "protocolVersion": 1,
+  "seq": 42,
+  "readOnly": false,
+  "docker": {
+    "available": true,
+    "contextName": "default",
+    "endpoint": "unix:///var/run/docker.sock",
+    "error": null,
+    "reason": null
+  },
+  "integrations": {
+    "terminal": null,
+    "editor": null,
+    "browser": null
+  },
+  "watchedDirectories": ["/home/dev/code"],
+  "discovered": [],
+  "projects": [
+    {
+      "id": "p-storefront",
+      "name": "storefront",
+      "path": "/home/dev/code/storefront",
+      "status": "running",
+      "composeProjectName": "storefront",
+      "isSail": true,
+      "services": [
+        { "name": "laravel.test", "containerId": "1a2b", "state": "running", "health": "healthy", "uiUrl": null, "dbPort": null, "orphaned": false, "dataVolumes": [] },
+        { "name": "mysql", "containerId": "3c4d", "state": "running", "health": "healthy", "uiUrl": null, "dbPort": 3306, "orphaned": false, "dataVolumes": ["sail-mysql"] },
+        { "name": "redis", "containerId": "5e6f", "state": "running", "health": "healthy", "uiUrl": null, "dbPort": null, "orphaned": false, "dataVolumes": ["sail-redis"] }
+      ],
+      "resolutionError": null,
+      "commands": [],
+      "processes": [{ "id": "horizon", "title": "Horizon", "running": true }],
+      "gitBranch": "main",
+      "gitDirty": true,
+      "appUrl": "http://localhost:8080",
+      "php": null,
+      "shareUrl": null,
+      "shareDashboardUrl": null,
+      "localDomain": "storefront.test",
+      "warnings": [],
+      "rank": 0
+    },
+    {
+      "id": "p-billing",
+      "name": "billing-api",
+      "path": "/home/dev/code/billing-api",
+      "status": "degraded",
+      "composeProjectName": "billing-api",
+      "isSail": true,
+      "services": [
+        { "name": "laravel.test", "containerId": "7a8b", "state": "running", "health": "healthy", "uiUrl": null, "dbPort": null, "orphaned": false, "dataVolumes": [] },
+        { "name": "queue", "containerId": "9c0d", "state": "running", "health": "unhealthy", "uiUrl": null, "dbPort": null, "orphaned": false, "dataVolumes": [] },
+        { "name": "pgsql", "containerId": null, "state": null, "health": "unknown", "uiUrl": null, "dbPort": null, "orphaned": false, "dataVolumes": ["sail-pgsql"] }
+      ],
+      "resolutionError": null,
+      "commands": [],
+      "processes": [],
+      "gitBranch": "feature/invoices",
+      "gitDirty": false,
+      "appUrl": "http://localhost:8081",
+      "php": null,
+      "shareUrl": null,
+      "shareDashboardUrl": null,
+      "localDomain": null,
+      "warnings": ["No .env file"],
+      "rank": 1
+    },
+    {
+      "id": "p-docs",
+      "name": "docs",
+      "path": "/home/dev/code/docs",
+      "status": "stopped",
+      "composeProjectName": "docs",
+      "isSail": false,
+      "services": [
+        { "name": "app", "containerId": null, "state": null, "health": "unknown", "uiUrl": null, "dbPort": null, "orphaned": false, "dataVolumes": [] }
+      ],
+      "resolutionError": null,
+      "commands": [],
+      "processes": [],
+      "gitBranch": null,
+      "gitDirty": null,
+      "appUrl": null,
+      "php": null,
+      "shareUrl": null,
+      "shareDashboardUrl": null,
+      "localDomain": null,
+      "warnings": [],
+      "rank": 2
+    }
+  ],
+  "workspaces": [
+    {
+      "id": "w-acme",
+      "name": "Acme",
+      "members": [
+        { "project": "p-storefront", "dependsOn": [] },
+        { "project": "p-billing", "dependsOn": ["p-storefront"] }
+      ],
+      "status": "degraded",
+      "graphError": null,
+      "warnings": []
+    }
+  ]
+}

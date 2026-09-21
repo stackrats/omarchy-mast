@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.stackrats.mast",
+  "name": "Mast",
+  "version": "0.1.0",
+  "author": "Stackrats",
+  "license": "MIT",
+  "description": "Your Laravel Sail projects in the Omarchy bar: see what is running at a glance, then start, stop, restart and open projects from a keyboard-friendly panel.",
+  "homepage": "https://mast.sh",
+  "repository": "https://github.com/stackrats/omarchy-mast",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Mast",
+    "description": "Running project count in the bar, and a panel to start, stop, restart and open your Sail projects.",
+    "category": "Developer Tools",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "refreshIntervalSec": 30,
+      "label": "ratio",
+      "hideWhenUnavailable": false,
+      "mastBinary": ""
+    },
+    "schema": [
+      {
+        "key": "refreshIntervalSec",
+        "type": "integer",
+        "label": "Refresh interval (seconds)",
+        "description": "How often the bar asks Mast for project state. The panel polls faster while it is open.",
+        "min": 5,
+        "max": 3600,
+        "step": 5,
+        "defaultValue": 30
+      },
+      {
+        "key": "label",
+        "type": "enum",
+        "label": "Bar label",
+        "description": "ratio shows running/total projects, running shows only the running count, none shows just the mark.",
+        "options": ["ratio", "running", "none"],
+        "defaultValue": "ratio"
+      },
+      {
+        "key": "hideWhenUnavailable",
+        "type": "boolean",
+        "label": "Hide when the Mast CLI is missing",
+        "description": "Take the widget out of the bar instead of showing a dimmed mark when mast is not installed.",
+        "defaultValue": false
+      },
+      {
+        "key": "mastBinary",
+        "type": "string",
+        "label": "mast binary",
+        "description": "Absolute path to the mast executable. Leave empty to find it on your login shell PATH.",
+        "defaultValue": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+# Nothing is generated; keep editor and OS droppings out of the plugin folder,
+# which the shell loads verbatim.
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
