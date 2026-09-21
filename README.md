@@ -106,10 +106,9 @@ No privilege escalation, no network access of its own, no install hooks, no writ
 
 ## Development
 
-Clone it somewhere and add that path as the plugin, so edits are live (the shell reloads plugin code on save):
+Add your working copy by path, so edits are live (the shell reloads plugin code on save):
 
 ```bash
-git clone https://github.com/stackrats/omarchy-mast.git ~/code/omarchy-mast
 omarchy plugin add ~/code/omarchy-mast --enable
 ```
 
