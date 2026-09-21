@@ -16,7 +16,7 @@ Your [Laravel Sail](https://laravel.com/docs/sail) projects in the Omarchy bar.
 - Docker, reachable by your user, for anything to actually run.
 - Optional: the Mast desktop app, for "Open in Mast". `mast://` links only navigate — they select a project — so this button never starts or stops anything by itself. Without the app (or with a stale `mast://` handler whose launcher is gone) the row button and its key stay hidden, and the bar's right-click and the `m` key open mast.sh instead.
 
-The plugin uses two Omarchy helpers that ship with the shell: `omarchy-launch-browser` to open web addresses and `xdg-open` as the fallback for `mast://` links.
+The plugin uses one Omarchy helper that ships with the shell, `omarchy-launch-browser`, to open web addresses.
 
 ## Install
 
@@ -99,7 +99,7 @@ Everything the plugin executes is an argv vector, never a shell string built fro
 - `mast status --json` on each poll.
 - `mast start|stop|restart <project>` when you ask.
 - `omarchy-launch-browser <url>` for the browser button and mast.sh.
-- `mast-desktop <mast://…>` when the desktop binary is on `PATH`, otherwise `xdg-open <mast://…>`.
+- The Mast launcher the probe found (`mast-desktop` on `PATH`, or the executable behind the registered `mast://` handler) with the link as its argument. Never `xdg-open`, which would hand a link the app failed to take to a browser.
 - One `bash -l` login shell, to find `mast` on your profile's `PATH` (the shell process that hosts plugins inherits Hyprland's environment, not your profile).
 
 No privilege escalation, no network access of its own, no install hooks, no writes outside its folder. Plugins run unsandboxed inside the Omarchy shell, so read the source before enabling it — it is short.

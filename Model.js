@@ -445,12 +445,25 @@ function appProbeArgv() {
   return ["bash", "-lc", APP_PROBE, "omarchy-mast"]
 }
 
-function appAvailableFromProbe(output) {
+// The launcher the probe found: the mast-desktop binary or the handler's
+// executable. "" when there is none.
+function appLauncherFromProbe(output) {
   var all = lines(output)
   for (var i = all.length - 1; i >= 0; i--) {
-    if (all[i].slice(0, 9) === "MAST_APP=") return trim(all[i].slice(9)) !== ""
+    if (all[i].slice(0, 9) === "MAST_APP=") return trim(all[i].slice(9))
   }
-  return false
+  return ""
+}
+
+function appAvailableFromProbe(output) {
+  return appLauncherFromProbe(output) !== ""
+}
+
+// mast:// links go straight to the launcher the probe found, never through
+// xdg-open: when the app fails to start, xdg-open hands the link to a
+// browser, which opens a tab it can do nothing with and hides the failure.
+function appLaunchArgv(launcher, link) {
+  return ["bash", "-lc", 'exec "$1" "$2"', "omarchy-mast", launcher, link]
 }
 
 function refreshIntervalMs(setting, opened) {
@@ -466,6 +479,8 @@ if (typeof module !== "undefined") {
     APP_MISSING: APP_MISSING,
     appProbeArgv: appProbeArgv,
     appAvailableFromProbe: appAvailableFromProbe,
+    appLauncherFromProbe: appLauncherFromProbe,
+    appLaunchArgv: appLaunchArgv,
     clampInt: clampInt,
     emptySnapshot: emptySnapshot,
     parseSnapshot: parseSnapshot,

@@ -104,7 +104,7 @@ BarWidget {
     function start(project: string): string { return root.act("start", project) }
     function stop(project: string): string { return root.act("stop", project) }
     function restart(project: string): string { return root.act("restart", project) }
-    function state(): string { return JSON.stringify({ state: mast.widgetState, app: mast.appAvailable, counts: mast.counts }) }
+    function state(): string { return JSON.stringify({ state: mast.widgetState, app: mast.appAvailable, launcher: mast.appLauncher, counts: mast.counts }) }
   }
 
   WidgetButton {

@@ -38,8 +38,10 @@ Item {
   // Not `state`: an Item already has one, and shadowing it is asking for a
   // silent binding to the wrong thing.
   readonly property string widgetState: Model.widgetState(phase, snapshot)
-  // Whether a mast:// link has anywhere to go on this machine.
-  property bool appAvailable: false
+  // Where a mast:// link goes on this machine: the mast-desktop binary or
+  // the registered handler's executable; "" when there is none.
+  property string appLauncher: ""
+  readonly property bool appAvailable: appLauncher !== ""
   readonly property bool busy: actionProcess.running
   readonly property string configuredBinary: String(setting("mastBinary", "") || "").trim()
   readonly property int refreshIntervalMs: Model.refreshIntervalMs(setting("refreshIntervalSec", 30), opened)
@@ -126,9 +128,9 @@ Item {
 
   // mast:// links only navigate — they select a project in the desktop app,
   // never start or stop anything — so this is safe to fire at an app that
-  // may or may not be running. mast-desktop forwards to a running window and
-  // launches one otherwise; xdg-open covers an AppImage that registered the
-  // scheme but sits off PATH.
+  // may or may not be running. The app forwards to a running window and
+  // launches one otherwise. The launcher is called directly, not through
+  // xdg-open, which would hand a link the app failed to take to a browser.
   function openLink(link) {
     if (!appAvailable) {
       // Handing the link to xdg-open without a working handler lands it in a
@@ -140,9 +142,7 @@ Item {
       openWebsite()
       return false
     }
-    Quickshell.execDetached(["bash", "-lc",
-      'if command -v mast-desktop >/dev/null 2>&1; then exec mast-desktop "$1"; else exec xdg-open "$1"; fi',
-      "omarchy-mast", link])
+    Quickshell.execDetached(Model.appLaunchArgv(appLauncher, link))
     return true
   }
 
@@ -266,7 +266,7 @@ Item {
     command: []
     stdout: StdioCollector { id: appProbeStdout; waitForEnd: true; onStreamFinished: root._appOut = text }
     onExited: function(exitCode) {
-      root.appAvailable = exitCode === 0 && Model.appAvailableFromProbe(String(appProbeStdout.text || root._appOut || ""))
+      root.appLauncher = exitCode === 0 ? Model.appLauncherFromProbe(String(appProbeStdout.text || root._appOut || "")) : ""
     }
   }
 
