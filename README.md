@@ -1,22 +1,22 @@
 # Mast for Omarchy
 
-Your [Laravel Sail](https://laravel.com/docs/sail) projects in the Omarchy bar.
+Your Laravel Sail projects in the Omarchy bar.
 
-[Mast](https://mast.sh) is a desktop control center for Sail: every project, its containers, logs, workers and services in one place, without replacing Sail or Docker. This plugin puts the part you glance at most into the bar, and the verbs you reach for most into a panel one click or one keystroke away.
+[Mast](https://mast.sh) is a desktop control center for Laravel Sail. This plugin puts it in the bar: how many projects are running, and a panel to start, stop, restart and open them without leaving the keyboard.
 
-- **In the bar:** the Mast mark with a running/total project count. It dims when everything is stopped, and carries a badge when a project is degraded or failed.
-- **In the panel:** one row per project with its state, running services, git branch and workspace. Start, stop or restart a project, open it in the browser at its trusted `https://` address, or jump to it in the Mast app.
-- **Keyboard first:** `j`/`k` walk the rows, `enter` starts or stops, and every action has a key.
-- **Honest when it cannot help:** if the `mast` CLI is missing, outdated, or Docker is down, the panel says so and what to do, instead of an empty list.
+- **Bar:** the Mast mark with running/total projects. Dims when everything is stopped, shows a badge when a project is degraded or failed.
+- **Panel:** one row per project with its state, services, git branch and workspace. Start, stop or restart it, open it in the browser, or open it in Mast.
+- **Keyboard:** `j`/`k` to move, `enter` to start or stop, one key per action.
+- **No Mast, no Docker?** The panel says what is missing and where to get it.
 
 ## Requirements
 
-- [Omarchy](https://omarchy.org) with the Quattro shell (the plugin system).
-- The `mast` CLI, **0.7.3 or newer**, from [mast.sh](https://mast.sh), on your login shell `PATH` or pointed at in the widget settings. The widget reads `mast status --json`, which arrived in 0.7.3; older builds show a "CLI needs updating" card.
-- Docker, reachable by your user, for anything to actually run.
-- Optional: the Mast desktop app, also 0.7.3 or newer, for "Open in Mast". `mast://` links only navigate — they select a project — so this button never starts or stops anything by itself. Without the app (or with a stale `mast://` handler whose launcher is gone) the row button and its key stay hidden, and the bar's right-click and the `m` key open mast.sh instead.
+- [Omarchy](https://omarchy.org) with the Quattro shell.
+- The `mast` CLI, **0.7.3 or newer**, from [mast.sh](https://mast.sh), on your login shell `PATH` or set in the widget settings. Older builds show a "CLI needs updating" card.
+- Docker, reachable by your user.
+- Optional: the Mast desktop app, 0.7.3 or newer, for "Open in Mast". `mast://` links only select a project; they never start or stop anything. Without the app, that button and its key are hidden and `m` opens mast.sh instead.
 
-The plugin uses one Omarchy helper that ships with the shell, `omarchy-launch-browser`, to open web addresses.
+Web addresses open through Omarchy's own `omarchy-launch-browser`.
 
 ## Install
 
