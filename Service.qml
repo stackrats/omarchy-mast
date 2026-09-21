@@ -1,7 +1,6 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import qs.Commons
 import "Model.js" as Model
 
 // Talks to the Mast CLI so the widget and the panel never have to: finds the
