@@ -10,7 +10,7 @@ var STATUSES = ["failed", "degraded", "starting", "running", "stopped"]
 // raises the window, which is all "open Mast" needs.
 var APP_LINK = "mast://"
 var WEBSITE = "https://mast.sh"
-var APP_MISSING = "Mast desktop app not found — mast:// links need it. Get it from mast.sh."
+var APP_MISSING = "Mast desktop app not found — opening mast.sh instead."
 
 function str(value) {
   return value === undefined || value === null ? "" : String(value)
@@ -425,14 +425,21 @@ function keyHints(appAvailable) {
 
 // Whether anything on this machine answers a mast:// link: the desktop
 // binary on the login shell's PATH, or a registered scheme handler whose
-// launcher is really Mast (an integrated AppImage registers one; a browser
-// that once claimed the scheme does not count). The answer rides on a marked
-// line, so a login shell that prints a banner cannot pass for a handler.
-var APP_PROBE = "h=$(command -v mast-desktop 2>/dev/null); "
-  + "if [ -z \"$h\" ]; then d=$(xdg-mime query default x-scheme-handler/mast 2>/dev/null); "
-  + "for dir in \"${XDG_DATA_HOME:-$HOME/.local/share}/applications\" /usr/local/share/applications /usr/share/applications; do "
-  + "if [ -n \"$d\" ] && [ -f \"$dir/$d\" ] && grep -qi '^Exec=.*mast' \"$dir/$d\"; then h=\"$dir/$d\"; break; fi; done; fi; "
-  + "printf 'MAST_APP=%s\\n' \"$h\""
+// launcher is Mast AND still exists. The app registers its handler at
+// runtime with the path it was launched from, so an AppImage that has since
+// been moved or deleted leaves a handler behind that xdg-open tries, fails,
+// and then hands to a browser. The answer rides on a marked line, so a login
+// shell that prints a banner cannot pass for a handler either.
+var APP_PROBE = [
+  'h=$(command -v mast-desktop 2>/dev/null)',
+  'if [ -z "$h" ]; then d=$(xdg-mime query default x-scheme-handler/mast 2>/dev/null)',
+  'for dir in "${XDG_DATA_HOME:-$HOME/.local/share}/applications" /usr/local/share/applications /usr/share/applications; do f="$dir/$d"',
+  'if [ -n "$d" ] && [ -f "$f" ]; then e=$(sed -n "s/^Exec=//p" "$f" | head -n 1)',
+  'case "$e" in \\"*) e=${e#\\"}; e=${e%%\\"*};; *) e=${e%% *};; esac',
+  'case "$e" in *[Mm]ast*) if command -v "$e" >/dev/null 2>&1; then h="$e"; fi;; esac; fi',
+  'if [ -n "$h" ]; then break; fi; done; fi',
+  'printf "MAST_APP=%s\\n" "$h"'
+].join("; ")
 
 function appProbeArgv() {
   return ["bash", "-lc", APP_PROBE, "omarchy-mast"]

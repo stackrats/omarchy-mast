@@ -14,7 +14,7 @@ Your [Laravel Sail](https://laravel.com/docs/sail) projects in the Omarchy bar.
 - [Omarchy](https://omarchy.org) with the Quattro shell (the plugin system).
 - The `mast` CLI, from [mast.sh](https://mast.sh), on your login shell `PATH` or pointed at in the widget settings. The widget reads `mast status --json`, so it needs a Mast release that has that flag.
 - Docker, reachable by your user, for anything to actually run.
-- Optional: the Mast desktop app, for "Open in Mast". `mast://` links only navigate — they select a project — so this button never starts or stops anything by itself. Without the app the button and its key stay hidden.
+- Optional: the Mast desktop app, for "Open in Mast". `mast://` links only navigate — they select a project — so this button never starts or stops anything by itself. Without the app (or with a stale `mast://` handler whose launcher is gone) the row button and its key stay hidden, and the bar's right-click and the `m` key open mast.sh instead.
 
 The plugin uses two Omarchy helpers that ship with the shell: `omarchy-launch-browser` to open web addresses and `xdg-open` as the fallback for `mast://` links.
 
@@ -30,7 +30,7 @@ Plugins land in `~/.config/omarchy/plugins/io.github.stackrats.mast/`. The widge
 omarchy bar move io.github.stackrats.mast --section center
 ```
 
-Update later with `omarchy plugin update io.github.stackrats.mast`, which shows the diff before fast-forwarding.
+Update later with `omarchy plugin update io.github.stackrats.mast`, which shows the diff before fast-forwarding. If the bar looks unchanged afterwards, the shell kept the previous instance of the widget around; `omarchy restart shell` clears it.
 
 ## Remove
 

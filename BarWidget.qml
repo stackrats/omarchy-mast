@@ -118,8 +118,8 @@ BarWidget {
     tooltipText: Model.tooltipText(mast.widgetState, mast.counts)
 
     onPressed: function(b) {
-      // Without the desktop app the panel is the next best place to land,
-      // and it shows why the app did not open.
+      // Without the desktop app this opens mast.sh instead, and the panel
+      // says so.
       if (b === Qt.RightButton) { if (!mast.openApp()) root.open() }
       else if (b === Qt.MiddleButton) root.refresh()
       else root.togglePanel()

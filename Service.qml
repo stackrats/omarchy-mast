@@ -131,10 +131,13 @@ Item {
   // scheme but sits off PATH.
   function openLink(link) {
     if (!appAvailable) {
-      // Handing the link to xdg-open without a handler lands it in a browser
-      // tab that cannot do anything with it; say what is missing instead.
+      // Handing the link to xdg-open without a working handler lands it in a
+      // browser tab that cannot do anything with it. Say what is missing and
+      // open the place to get it.
       actionStatus = Model.APP_MISSING
-      actionFailed = true
+      actionFailed = false
+      actionStatusTimer.restart()
+      openWebsite()
       return false
     }
     Quickshell.execDetached(["bash", "-lc",

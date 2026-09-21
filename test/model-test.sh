@@ -148,7 +148,8 @@ assertEqual(model.appAvailableFromProbe('MAST_APP=\n'), false, 'no binary and no
 assertEqual(model.appAvailableFromProbe('some banner text\n'), false, 'output without the marker never counts as a handler')
 assertEqual(model.appAvailableFromProbe(''), false, 'empty output means no app')
 assertEqual(model.appProbeArgv()[0], 'bash', 'the probe runs through a login shell so PATH matches the profile')
-assert(model.appProbeArgv()[2].indexOf("grep -qi '^Exec=.*mast'") !== -1, 'a handler only counts when its launcher is Mast')
+assert(model.appProbeArgv()[2].indexOf('command -v "$e"') !== -1, 'a handler only counts when its launcher still exists')
+assert(model.appProbeArgv()[2].indexOf('*[Mm]ast*') !== -1, 'a handler only counts when its launcher is Mast')
 
 // ---- timing
 assertEqual(model.refreshIntervalMs(30, false), 30000, 'closed panels poll at the configured interval')
