@@ -142,10 +142,13 @@ assertEqual(model.elide('x'.repeat(200), 20).length, 20, 'elide caps at the limi
 // ---- the optional desktop app
 assert(model.keyHints(true).indexOf('m mast') !== -1, 'key hints mention the app when a handler exists')
 assert(model.keyHints(false).indexOf('m mast') === -1, 'key hints drop the app when nothing handles mast:// links')
-assertEqual(model.appAvailableFromProbe('/usr/bin/mast-desktop\n'), true, 'a desktop binary on PATH makes the app available')
-assertEqual(model.appAvailableFromProbe('mast.desktop\n'), true, 'a registered scheme handler makes the app available')
-assertEqual(model.appAvailableFromProbe('  \n'), false, 'no binary and no handler means no app')
+assertEqual(model.appAvailableFromProbe('MAST_APP=/usr/bin/mast-desktop\n'), true, 'a desktop binary on PATH makes the app available')
+assertEqual(model.appAvailableFromProbe('Welcome!\nMAST_APP=/home/u/.local/share/applications/mast.desktop\n'), true, 'a registered handler makes the app available, banner or not')
+assertEqual(model.appAvailableFromProbe('MAST_APP=\n'), false, 'no binary and no handler means no app')
+assertEqual(model.appAvailableFromProbe('some banner text\n'), false, 'output without the marker never counts as a handler')
+assertEqual(model.appAvailableFromProbe(''), false, 'empty output means no app')
 assertEqual(model.appProbeArgv()[0], 'bash', 'the probe runs through a login shell so PATH matches the profile')
+assert(model.appProbeArgv()[2].indexOf("grep -qi '^Exec=.*mast'") !== -1, 'a handler only counts when its launcher is Mast')
 
 // ---- timing
 assertEqual(model.refreshIntervalMs(30, false), 30000, 'closed panels poll at the configured interval')
