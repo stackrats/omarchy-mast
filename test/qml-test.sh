@@ -14,9 +14,15 @@ if ! command -v qmllint >/dev/null 2>&1 || ! qmllint --version >/dev/null 2>&1; 
   exit 0
 fi
 
+# Quickshell maps `qs.` to the shell's root directory, so qmllint needs an
+# import path that contains a `qs` entry pointing there; the shell directory
+# itself does not resolve `qs.Commons`.
 args=()
 if [[ -n ${OMARCHY_PATH:-} && -d $OMARCHY_PATH/shell ]]; then
-  args+=(-I "$OMARCHY_PATH/shell")
+  shim=$(mktemp -d)
+  trap 'rm -rf "$shim"' EXIT
+  ln -s "$OMARCHY_PATH/shell" "$shim/qs"
+  args+=(-I "$shim")
 fi
 
 for file in "$ROOT"/*.qml; do

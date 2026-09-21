@@ -23,11 +23,11 @@ BarWidget {
 
   readonly property string labelMode: String(setting("label", "ratio"))
   readonly property bool hideWhenUnavailable: setting("hideWhenUnavailable", false) === true
-  readonly property string labelText: vertical ? "" : Model.barLabel(mast.counts, labelMode, mast.state)
+  readonly property string labelText: vertical ? "" : Model.barLabel(mast.counts, labelMode, mast.widgetState)
   readonly property color urgent: bar ? bar.urgent : Color.urgent
-  readonly property bool attention: mast.state === "attention"
-  readonly property real markOpacity: Model.iconOpacity(mast.state)
-  readonly property bool shown: !(hideWhenUnavailable && mast.state === "missing")
+  readonly property bool attention: mast.widgetState === "attention"
+  readonly property real markOpacity: Model.iconOpacity(mast.widgetState)
+  readonly property bool shown: !(hideWhenUnavailable && mast.widgetState === "missing")
 
   function refresh() {
     mast.refresh()
@@ -104,7 +104,7 @@ BarWidget {
     function start(project: string): string { return root.act("start", project) }
     function stop(project: string): string { return root.act("stop", project) }
     function restart(project: string): string { return root.act("restart", project) }
-    function state(): string { return JSON.stringify({ state: mast.state, counts: mast.counts }) }
+    function state(): string { return JSON.stringify({ state: mast.widgetState, app: mast.appAvailable, counts: mast.counts }) }
   }
 
   WidgetButton {
@@ -115,10 +115,12 @@ BarWidget {
     hasVisualContent: true
     fixedWidth: root.vertical ? -1 : Math.round(content.implicitWidth + button.scaledHorizontalMargin * 2)
     fixedHeight: root.vertical ? Style.bar.iconSlot : -1
-    tooltipText: Model.tooltipText(mast.state, mast.counts)
+    tooltipText: Model.tooltipText(mast.widgetState, mast.counts)
 
     onPressed: function(b) {
-      if (b === Qt.RightButton) mast.openApp()
+      // Without the desktop app the panel is the next best place to land,
+      // and it shows why the app did not open.
+      if (b === Qt.RightButton) { if (!mast.openApp()) root.open() }
       else if (b === Qt.MiddleButton) root.refresh()
       else root.togglePanel()
     }

@@ -10,6 +10,7 @@ var STATUSES = ["failed", "degraded", "starting", "running", "stopped"]
 // raises the window, which is all "open Mast" needs.
 var APP_LINK = "mast://"
 var WEBSITE = "https://mast.sh"
+var APP_MISSING = "Mast desktop app not found — mast:// links need it. Get it from mast.sh."
 
 function str(value) {
   return value === undefined || value === null ? "" : String(value)
@@ -416,8 +417,21 @@ function actionSummary(verb, name, exitCode, stdout, stderr) {
   return { ok: false, message: elide(name + ": " + verb + " failed" + (reason ? " — " + reason : "")) }
 }
 
-function keyHints() {
-  return "enter start/stop · t restart · o open · m mast · r refresh · esc close"
+// The desktop app is optional; the hint for it only appears when a handler
+// for mast:// links is there to receive them.
+function keyHints(appAvailable) {
+  return "enter start/stop · t restart · o open" + (appAvailable ? " · m mast" : "") + " · r refresh · esc close"
+}
+
+// Whether anything on this machine answers a mast:// link: the desktop
+// binary on the login shell's PATH, or a registered scheme handler (an
+// integrated AppImage registers one). Empty output means neither.
+function appProbeArgv() {
+  return ["bash", "-lc", "command -v mast-desktop 2>/dev/null || xdg-mime query default x-scheme-handler/mast 2>/dev/null", "omarchy-mast"]
+}
+
+function appAvailableFromProbe(output) {
+  return trim(output) !== ""
 }
 
 function refreshIntervalMs(setting, opened) {
@@ -430,6 +444,9 @@ if (typeof module !== "undefined") {
   module.exports = {
     APP_LINK: APP_LINK,
     WEBSITE: WEBSITE,
+    APP_MISSING: APP_MISSING,
+    appProbeArgv: appProbeArgv,
+    appAvailableFromProbe: appAvailableFromProbe,
     clampInt: clampInt,
     emptySnapshot: emptySnapshot,
     parseSnapshot: parseSnapshot,

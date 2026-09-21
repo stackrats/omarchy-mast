@@ -139,6 +139,14 @@ assertEqual(model.actionSummary('stop', 'docs', 1, '', '').message, 'docs: stop 
 assertEqual(model.lastLine('a\n\n b \n\n'), 'b', 'last line skips blank lines and trims')
 assertEqual(model.elide('x'.repeat(200), 20).length, 20, 'elide caps at the limit')
 
+// ---- the optional desktop app
+assert(model.keyHints(true).indexOf('m mast') !== -1, 'key hints mention the app when a handler exists')
+assert(model.keyHints(false).indexOf('m mast') === -1, 'key hints drop the app when nothing handles mast:// links')
+assertEqual(model.appAvailableFromProbe('/usr/bin/mast-desktop\n'), true, 'a desktop binary on PATH makes the app available')
+assertEqual(model.appAvailableFromProbe('mast.desktop\n'), true, 'a registered scheme handler makes the app available')
+assertEqual(model.appAvailableFromProbe('  \n'), false, 'no binary and no handler means no app')
+assertEqual(model.appProbeArgv()[0], 'bash', 'the probe runs through a login shell so PATH matches the profile')
+
 // ---- timing
 assertEqual(model.refreshIntervalMs(30, false), 30000, 'closed panels poll at the configured interval')
 assertEqual(model.refreshIntervalMs(30, true), 10000, 'open panels poll faster')

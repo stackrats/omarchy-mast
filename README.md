@@ -14,7 +14,7 @@ Your [Laravel Sail](https://laravel.com/docs/sail) projects in the Omarchy bar.
 - [Omarchy](https://omarchy.org) with the Quattro shell (the plugin system).
 - The `mast` CLI, from [mast.sh](https://mast.sh), on your login shell `PATH` or pointed at in the widget settings. The widget reads `mast status --json`, so it needs a Mast release that has that flag.
 - Docker, reachable by your user, for anything to actually run.
-- Optional: the Mast desktop app, for "Open in Mast". `mast://` links only navigate — they select a project — so this button never starts or stops anything by itself.
+- Optional: the Mast desktop app, for "Open in Mast". `mast://` links only navigate — they select a project — so this button never starts or stops anything by itself. Without the app the button and its key stay hidden.
 
 The plugin uses two Omarchy helpers that ship with the shell: `omarchy-launch-browser` to open web addresses and `xdg-open` as the fallback for `mast://` links.
 
@@ -58,7 +58,7 @@ That disables the widget and deletes the checkout. The plugin writes nothing out
 | Panel | `tab` / `shift+tab` | switch to the neighbouring bar panel |
 | Panel | `esc` | close |
 
-Each row also has the buttons: start or stop, restart (only for projects that are up), open in browser (only when the project has an address), and open in Mast.
+Each row also has the buttons: start or stop, restart (only for projects that are up), open in browser (only when the project has an address), and open in Mast (only when the desktop app, or a registered `mast://` handler, is present on the machine).
 
 The browser button prefers the project's trusted local domain (`https://myapp.test`, set up in Mast) and falls back to `APP_URL` from `.env`.
 

@@ -35,12 +35,17 @@ Item {
   readonly property bool installed: mastPath !== ""
   readonly property var projects: snapshot.projects
   readonly property var counts: snapshot.counts
-  readonly property string state: Model.widgetState(phase, snapshot)
+  // Not `state`: an Item already has one, and shadowing it is asking for a
+  // silent binding to the wrong thing.
+  readonly property string widgetState: Model.widgetState(phase, snapshot)
+  // Whether a mast:// link has anywhere to go on this machine.
+  property bool appAvailable: false
   readonly property bool busy: actionProcess.running
   readonly property string configuredBinary: String(setting("mastBinary", "") || "").trim()
   readonly property int refreshIntervalMs: Model.refreshIntervalMs(setting("refreshIntervalSec", 30), opened)
 
   property string _resolveOut: ""
+  property string _appOut: ""
   property string _statusOut: ""
   property string _statusErr: ""
   property string _actionOut: ""
@@ -52,6 +57,11 @@ Item {
   }
 
   function refresh() {
+    if (!appProbe.running) {
+      _appOut = ""
+      appProbe.command = Model.appProbeArgv()
+      appProbe.running = true
+    }
     if (statusProcess.running || resolveProcess.running) return
     if (mastPath === "") {
       resolve()
@@ -120,6 +130,13 @@ Item {
   // launches one otherwise; xdg-open covers an AppImage that registered the
   // scheme but sits off PATH.
   function openLink(link) {
+    if (!appAvailable) {
+      // Handing the link to xdg-open without a handler lands it in a browser
+      // tab that cannot do anything with it; say what is missing instead.
+      actionStatus = Model.APP_MISSING
+      actionFailed = true
+      return false
+    }
     Quickshell.execDetached(["bash", "-lc",
       'if command -v mast-desktop >/dev/null 2>&1; then exec mast-desktop "$1"; else exec xdg-open "$1"; fi',
       "omarchy-mast", link])
@@ -237,6 +254,16 @@ Item {
         root.refreshing = false
         root.lastError = ""
       }
+    }
+  }
+
+  Process {
+    id: appProbe
+    running: false
+    command: []
+    stdout: StdioCollector { id: appProbeStdout; waitForEnd: true; onStreamFinished: root._appOut = text }
+    onExited: function(exitCode) {
+      root.appAvailable = exitCode === 0 && Model.appAvailableFromProbe(String(appProbeStdout.text || root._appOut || ""))
     }
   }
 

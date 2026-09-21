@@ -29,7 +29,8 @@ Panel {
   readonly property color dim: Qt.darker(foreground, 1.55)
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
 
-  readonly property string state: service ? service.state : "checking"
+  readonly property string widgetState: service ? service.widgetState : "checking"
+  readonly property bool appAvailable: service ? service.appAvailable : false
   readonly property var projects: service ? service.projects : []
   readonly property var counts: service ? service.counts : Model.countProjects([])
   readonly property var snapshot: service ? service.snapshot : Model.emptySnapshot()
@@ -41,9 +42,9 @@ Panel {
   readonly property bool actionFailed: service ? service.actionFailed : false
   readonly property bool readOnly: snapshot.readOnly === true
   // Counts mean something only once the CLI has answered.
-  readonly property bool ready: state === "running" || state === "idle" || state === "attention"
-  readonly property bool cliUsable: state !== "missing" && state !== "outdated"
-  readonly property var guidance: Model.guidance(state, snapshot, lastError)
+  readonly property bool ready: widgetState === "running" || widgetState === "idle" || widgetState === "attention"
+  readonly property bool cliUsable: widgetState !== "missing" && widgetState !== "outdated"
+  readonly property var guidance: Model.guidance(widgetState, snapshot, lastError)
 
   property int projectIndex: 0
   property bool cursorActive: false
@@ -256,8 +257,8 @@ Panel {
             readonly property bool ringVisible: root.cursorActive && root.focusSection === "header"
             readonly property bool cliUsable: root.cliUsable
             readonly property bool refreshing: root.refreshing
-            readonly property bool attention: root.state === "attention"
-            readonly property real markOpacity: Model.iconOpacity(root.state)
+            readonly property bool attention: root.widgetState === "attention"
+            readonly property real markOpacity: Model.iconOpacity(root.widgetState)
             readonly property color foreground: root.foreground
             readonly property color urgent: root.urgent
             function focusHero() { root.setHeaderCursor() }
@@ -267,8 +268,8 @@ Panel {
               id: hero
               width: parent.width
               title: "Mast"
-              meta: Model.heroMeta(root.state, root.snapshot)
-              detail: Model.heroDetail(root.state, root.counts)
+              meta: Model.heroMeta(root.widgetState, root.snapshot)
+              detail: Model.heroDetail(root.widgetState, root.counts)
               foreground: root.foreground
               fontFamily: root.fontFamily
               iconOpacity: header.markOpacity
@@ -381,7 +382,7 @@ Panel {
             textFormat: Text.PlainText
             visible: root.projects.length > 0
             width: parent.width
-            text: Model.keyHints()
+            text: Model.keyHints(root.appAvailable)
             color: root.dim
             font.family: root.fontFamily
             font.pixelSize: Style.font.caption
@@ -569,6 +570,7 @@ Panel {
       PanelActionButton {
         iconText: "󰏌"
         tooltipText: "Open in Mast"
+        visible: root.appAvailable
         foreground: root.foreground
         fontFamily: root.fontFamily
         Layout.alignment: Qt.AlignVCenter
