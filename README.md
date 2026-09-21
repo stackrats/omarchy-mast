@@ -12,9 +12,9 @@ Your [Laravel Sail](https://laravel.com/docs/sail) projects in the Omarchy bar.
 ## Requirements
 
 - [Omarchy](https://omarchy.org) with the Quattro shell (the plugin system).
-- The `mast` CLI, from [mast.sh](https://mast.sh), on your login shell `PATH` or pointed at in the widget settings. The widget reads `mast status --json`, so it needs a Mast release that has that flag.
+- The `mast` CLI, **0.7.3 or newer**, from [mast.sh](https://mast.sh), on your login shell `PATH` or pointed at in the widget settings. The widget reads `mast status --json`, which arrived in 0.7.3; older builds show a "CLI needs updating" card.
 - Docker, reachable by your user, for anything to actually run.
-- Optional: the Mast desktop app, for "Open in Mast". `mast://` links only navigate — they select a project — so this button never starts or stops anything by itself. Without the app (or with a stale `mast://` handler whose launcher is gone) the row button and its key stay hidden, and the bar's right-click and the `m` key open mast.sh instead.
+- Optional: the Mast desktop app, also 0.7.3 or newer, for "Open in Mast". `mast://` links only navigate — they select a project — so this button never starts or stops anything by itself. Without the app (or with a stale `mast://` handler whose launcher is gone) the row button and its key stay hidden, and the bar's right-click and the `m` key open mast.sh instead.
 
 The plugin uses one Omarchy helper that ships with the shell, `omarchy-launch-browser`, to open web addresses.
 
